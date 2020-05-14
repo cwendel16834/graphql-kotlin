@@ -18,6 +18,7 @@ package com.expediagroup.graphql.generator.types
 
 import com.expediagroup.graphql.TopLevelObject
 import com.expediagroup.graphql.exceptions.InvalidQueryTypeException
+import com.expediagroup.graphql.generator.GraphQLConceptType
 import com.expediagroup.graphql.generator.SchemaGenerator
 import com.expediagroup.graphql.generator.extensions.getValidFunctions
 import com.expediagroup.graphql.generator.extensions.isNotPublic
@@ -36,7 +37,7 @@ internal fun generateQueries(generator: SchemaGenerator, queries: List<TopLevelO
             queryBuilder.withDirective(it)
         }
 
-        query.kClass.getValidFunctions(generator.config.hooks)
+        query.kClass.getValidFunctions(generator.config.hooks, GraphQLConceptType.QUERY)
             .forEach {
                 val function = generateFunction(generator, it, generator.config.topLevelNames.query, query.obj)
                 val functionFromHook = generator.config.hooks.didGenerateQueryField(query.kClass, it, function)

@@ -22,6 +22,7 @@ import com.expediagroup.graphql.exceptions.EmptyInputObjectTypeException
 import com.expediagroup.graphql.exceptions.EmptyInterfaceTypeException
 import com.expediagroup.graphql.exceptions.EmptyObjectTypeException
 import com.expediagroup.graphql.extensions.deepName
+import com.expediagroup.graphql.generator.GraphQLConceptType
 import com.expediagroup.graphql.generator.extensions.getSimpleName
 import com.expediagroup.graphql.getTestSchemaConfigWithHooks
 import com.expediagroup.graphql.test.utils.graphqlUUIDType
@@ -77,7 +78,7 @@ class SchemaGeneratorHooksTest {
         class MockSchemaGeneratorHooks : SchemaGeneratorHooks {
             var calledFilterFunction = false
 
-            override fun isValidProperty(kClass: KClass<*>, property: KProperty<*>): Boolean {
+            override fun isValidProperty(kClass: KClass<*>, property: KProperty<*>, graphQLConceptType: GraphQLConceptType): Boolean {
                 calledFilterFunction = true
                 return false
             }
@@ -101,7 +102,7 @@ class SchemaGeneratorHooksTest {
         class MockSchemaGeneratorHooks : SchemaGeneratorHooks {
             var calledFilterFunction = false
 
-            override fun isValidFunction(kClass: KClass<*>, function: KFunction<*>): Boolean {
+            override fun isValidFunction(kClass: KClass<*>, function: KFunction<*>, graphQLConceptType: GraphQLConceptType): Boolean {
                 calledFilterFunction = true
                 return false
             }

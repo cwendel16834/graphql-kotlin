@@ -16,6 +16,7 @@
 
 package com.expediagroup.graphql.generator.types
 
+import com.expediagroup.graphql.generator.GraphQLConceptType
 import com.expediagroup.graphql.generator.SchemaGenerator
 import com.expediagroup.graphql.generator.extensions.getPropertyAnnotations
 import com.expediagroup.graphql.generator.extensions.getSimpleName
@@ -57,7 +58,7 @@ private fun getDirective(generator: SchemaGenerator, directiveInfo: DirectiveInf
         }
 
         val directiveClass = directiveInfo.directive.annotationClass
-        directiveClass.getValidProperties(generator.config.hooks).forEach { prop ->
+        directiveClass.getValidProperties(generator.config.hooks, GraphQLConceptType.DIRECTIVE).forEach { prop ->
             val propertyName = prop.name
             val value = prop.call(directiveInfo.directive)
             val type = generateGraphQLType(generator, prop.returnType)
@@ -76,7 +77,7 @@ private fun getDirective(generator: SchemaGenerator, directiveInfo: DirectiveInf
     return if (directive.arguments.isNotEmpty()) {
         // update args for this instance
         val builder = GraphQLDirective.newDirective(directive)
-        directiveInfo.directive.annotationClass.getValidProperties(generator.config.hooks).forEach { prop ->
+        directiveInfo.directive.annotationClass.getValidProperties(generator.config.hooks, GraphQLConceptType.DIRECTIVE).forEach { prop ->
             val defaultArgument = directive.getArgument(prop.name)
             val value = prop.call(directiveInfo.directive)
             val argument = GraphQLArgument.newArgument(defaultArgument)

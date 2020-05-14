@@ -17,6 +17,7 @@
 package com.expediagroup.graphql.generator.types
 
 import com.expediagroup.graphql.extensions.unwrapType
+import com.expediagroup.graphql.generator.GraphQLConceptType
 import com.expediagroup.graphql.generator.SchemaGenerator
 import com.expediagroup.graphql.generator.extensions.getGraphQLDescription
 import com.expediagroup.graphql.generator.extensions.getSimpleName
@@ -41,7 +42,7 @@ internal fun generateObject(generator: SchemaGenerator, kClass: KClass<*>): Grap
         builder.withDirective(it)
     }
 
-    kClass.getValidSuperclasses(generator.config.hooks)
+    kClass.getValidSuperclasses(generator.config.hooks, GraphQLConceptType.OBJECT)
         .map { generateGraphQLType(generator, it.createType()) }
         .forEach {
             when (val unwrappedType = it.unwrapType()) {
@@ -50,10 +51,10 @@ internal fun generateObject(generator: SchemaGenerator, kClass: KClass<*>): Grap
             }
         }
 
-    kClass.getValidProperties(generator.config.hooks)
+    kClass.getValidProperties(generator.config.hooks, GraphQLConceptType.OBJECT)
         .forEach { builder.field(generateProperty(generator, it, kClass)) }
 
-    kClass.getValidFunctions(generator.config.hooks)
+    kClass.getValidFunctions(generator.config.hooks, GraphQLConceptType.OBJECT)
         .forEach { builder.field(generateFunction(generator, it, name)) }
 
     return generator.config.hooks.onRewireGraphQLType(builder.build()).safeCast()

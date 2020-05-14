@@ -19,6 +19,7 @@ package com.expediagroup.graphql.generator.extensions
 import com.expediagroup.graphql.annotations.GraphQLIgnore
 import com.expediagroup.graphql.annotations.GraphQLName
 import com.expediagroup.graphql.exceptions.CouldNotGetNameOfKClassException
+import com.expediagroup.graphql.generator.GraphQLConceptType
 import com.expediagroup.graphql.hooks.NoopSchemaGeneratorHooks
 import com.expediagroup.graphql.hooks.SchemaGeneratorHooks
 import org.junit.jupiter.api.Test
@@ -147,13 +148,13 @@ open class KClassExtensionsTest {
     }
 
     private class FilterHooks : SchemaGeneratorHooks {
-        override fun isValidProperty(kClass: KClass<*>, property: KProperty<*>) =
+        override fun isValidProperty(kClass: KClass<*>, property: KProperty<*>, graphQLConceptType: GraphQLConceptType): Boolean =
             property.name.contains("filteredProperty").not()
 
-        override fun isValidFunction(kClass: KClass<*>, function: KFunction<*>) =
+        override fun isValidFunction(kClass: KClass<*>, function: KFunction<*>, graphQLConceptType: GraphQLConceptType): Boolean =
             function.name.contains("filteredFunction").not()
 
-        override fun isValidSuperclass(kClass: KClass<*>) =
+        override fun isValidSuperclass(kClass: KClass<*>, graphQLConceptType: GraphQLConceptType): Boolean =
             kClass.simpleName?.contains("InvalidFunctionUnionInterface")?.not().isTrue()
     }
 
@@ -161,79 +162,79 @@ open class KClassExtensionsTest {
 
     @Test
     fun `test getting valid properties with no hooks`() {
-        val properties = MyTestClass::class.getValidProperties(noopHooks)
+        val properties = MyTestClass::class.getValidProperties(noopHooks, GraphQLConceptType.OBJECT)
         assertEquals(listOf("filteredProperty", "publicProperty"), properties.map { it.name })
     }
 
     @Test
     fun `test getting valid properties with filter hooks`() {
-        val properties = MyTestClass::class.getValidProperties(FilterHooks())
+        val properties = MyTestClass::class.getValidProperties(FilterHooks(), GraphQLConceptType.OBJECT)
         assertEquals(listOf("publicProperty"), properties.map { it.name })
     }
 
     @Test
     fun `test getting valid properties from abstract classes`() {
-        val concreteProperties = SomeConcreteClass::class.getValidProperties(noopHooks)
+        val concreteProperties = SomeConcreteClass::class.getValidProperties(noopHooks, GraphQLConceptType.OBJECT)
         assertEquals(listOf("justAnotherField", "someField"), concreteProperties.map { it.name })
     }
 
     @Test
     fun `test getting valid functions with no hooks`() {
-        val properties = MyTestClass::class.getValidFunctions(noopHooks)
+        val properties = MyTestClass::class.getValidFunctions(noopHooks, GraphQLConceptType.OBJECT)
         assertEquals(listOf("filteredFunction", "publicFunction"), properties.map { it.name })
     }
 
     @Test
     fun `test getting valid functions with filter hooks`() {
-        val properties = MyTestClass::class.getValidFunctions(FilterHooks())
+        val properties = MyTestClass::class.getValidFunctions(FilterHooks(), GraphQLConceptType.OBJECT)
         assertEquals(listOf("publicFunction"), properties.map { it.name })
     }
 
     @Test
     fun `test getting functions from abstract classes`() {
-        val properties = SomeConcreteClass::class.getValidFunctions(noopHooks)
+        val properties = SomeConcreteClass::class.getValidFunctions(noopHooks, GraphQLConceptType.OBJECT)
         assertEquals(listOf("someFunction"), properties.map { it.name })
     }
 
     @Test
     fun `test getting valid superclass with no hooks`() {
-        val superclasses = InterfaceSuperclass::class.getValidSuperclasses(noopHooks)
+        val superclasses = InterfaceSuperclass::class.getValidSuperclasses(noopHooks, GraphQLConceptType.OBJECT)
         assertEquals(listOf("InvalidFunctionUnionInterface"), superclasses.map { it.simpleName })
     }
 
     @Test
     fun `test getting valid superclass with filter hooks`() {
-        val superclasses = InterfaceSuperclass::class.getValidSuperclasses(FilterHooks())
+        val superclasses = InterfaceSuperclass::class.getValidSuperclasses(FilterHooks(), GraphQLConceptType.OBJECT)
         assertTrue(superclasses.isEmpty())
     }
 
     @Test
     fun `test getting invalid superclass with no hooks`() {
-        val superclasses = UnionSuperclass::class.getValidSuperclasses(noopHooks)
+        val superclasses = UnionSuperclass::class.getValidSuperclasses(noopHooks, GraphQLConceptType.OBJECT)
         assertTrue(superclasses.isEmpty())
     }
 
     @Test
     fun `Superclasses are not included when marked as ignored`() {
-        val superclasses = ClassWithNoValidSuperclass::class.getValidSuperclasses(noopHooks)
+        val superclasses = ClassWithNoValidSuperclass::class.getValidSuperclasses(noopHooks, GraphQLConceptType.OBJECT)
         assertTrue(superclasses.isEmpty())
     }
 
     @Test
     fun `Return superclasses from abstract class two levels deep`() {
-        val superclasses = ClassWithSecondLevelAbstractClass::class.getValidSuperclasses(noopHooks)
+        val superclasses = ClassWithSecondLevelAbstractClass::class.getValidSuperclasses(noopHooks, GraphQLConceptType.OBJECT)
         assertEquals(expected = 1, actual = superclasses.size)
     }
 
     @Test
     fun `Return superclasses from abstract class three levels deep`() {
-        val superclasses = ClassWithThirdLevelAbstractClass::class.getValidSuperclasses(noopHooks)
+        val superclasses = ClassWithThirdLevelAbstractClass::class.getValidSuperclasses(noopHooks, GraphQLConceptType.OBJECT)
         assertEquals(expected = 1, actual = superclasses.size)
     }
 
     @Test
     fun `Return superclasses from interface two levels deep`() {
-        val superclasses = ClassWithSecondLevelInterface::class.getValidSuperclasses(noopHooks)
+        val superclasses = ClassWithSecondLevelInterface::class.getValidSuperclasses(noopHooks, GraphQLConceptType.OBJECT)
         assertEquals(expected = 1, actual = superclasses.size)
     }
 

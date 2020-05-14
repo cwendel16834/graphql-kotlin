@@ -17,6 +17,7 @@
 package com.expediagroup.graphql.generator.types
 
 import com.expediagroup.graphql.exceptions.InvalidInterfaceException
+import com.expediagroup.graphql.generator.GraphQLConceptType
 import com.expediagroup.graphql.generator.SchemaGenerator
 import com.expediagroup.graphql.generator.extensions.getGraphQLDescription
 import com.expediagroup.graphql.generator.extensions.getSimpleName
@@ -32,7 +33,7 @@ import kotlin.reflect.full.createType
 
 internal fun generateInterface(generator: SchemaGenerator, kClass: KClass<*>): GraphQLInterfaceType {
     // Interfaces can not implement another interface in GraphQL
-    if (kClass.getValidSuperclasses(generator.config.hooks).isNotEmpty()) {
+    if (kClass.getValidSuperclasses(generator.config.hooks, GraphQLConceptType.INTERFACE).isNotEmpty()) {
         throw InvalidInterfaceException(klazz = kClass)
     }
 
@@ -45,10 +46,10 @@ internal fun generateInterface(generator: SchemaGenerator, kClass: KClass<*>): G
         builder.withDirective(it)
     }
 
-    kClass.getValidProperties(generator.config.hooks)
+    kClass.getValidProperties(generator.config.hooks, GraphQLConceptType.INTERFACE)
         .forEach { builder.field(generateProperty(generator, it, kClass)) }
 
-    kClass.getValidFunctions(generator.config.hooks)
+    kClass.getValidFunctions(generator.config.hooks, GraphQLConceptType.INTERFACE)
         .forEach { builder.field(generateFunction(generator, it, kClass.getSimpleName(), null, abstract = true)) }
 
     generator.classScanner.getSubTypesOf(kClass)

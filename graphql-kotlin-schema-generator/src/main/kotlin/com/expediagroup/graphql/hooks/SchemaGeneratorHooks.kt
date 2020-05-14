@@ -23,6 +23,7 @@ import com.expediagroup.graphql.exceptions.EmptyMutationTypeException
 import com.expediagroup.graphql.exceptions.EmptyObjectTypeException
 import com.expediagroup.graphql.exceptions.EmptyQueryTypeException
 import com.expediagroup.graphql.exceptions.EmptySubscriptionTypeException
+import com.expediagroup.graphql.generator.GraphQLConceptType
 import com.expediagroup.graphql.generator.extensions.isSubclassOf
 import graphql.schema.FieldCoordinates
 import graphql.schema.GraphQLCodeRegistry
@@ -77,21 +78,21 @@ interface SchemaGeneratorHooks {
      * If any filter returns false, it is rejected.
      */
     @Suppress("Detekt.FunctionOnlyReturningConstant")
-    fun isValidSuperclass(kClass: KClass<*>): Boolean = true
+    fun isValidSuperclass(kClass: KClass<*>, graphQLConceptType: GraphQLConceptType): Boolean = true
 
     /**
      * Called when looking at the KClass properties to determine if it valid for adding to the generated schema.
      * If any filter returns false, it is rejected.
      */
     @Suppress("Detekt.FunctionOnlyReturningConstant")
-    fun isValidProperty(kClass: KClass<*>, property: KProperty<*>): Boolean = true
+    fun isValidProperty(kClass: KClass<*>, property: KProperty<*>, graphQLConceptType: GraphQLConceptType): Boolean = true
 
     /**
      * Called when looking at the KClass functions to determine if it valid for adding to the generated schema.
      * If any filter returns false, it is rejected.
      */
     @Suppress("Detekt.FunctionOnlyReturningConstant")
-    fun isValidFunction(kClass: KClass<*>, function: KFunction<*>): Boolean = true
+    fun isValidFunction(kClass: KClass<*>, function: KFunction<*>, graphQLConceptType: GraphQLConceptType): Boolean = true
 
     /**
      * Called when looking at the subscription functions to determine if it is using a valid return type.

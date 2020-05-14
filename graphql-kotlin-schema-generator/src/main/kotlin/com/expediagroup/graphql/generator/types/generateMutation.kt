@@ -18,6 +18,7 @@ package com.expediagroup.graphql.generator.types
 
 import com.expediagroup.graphql.TopLevelObject
 import com.expediagroup.graphql.exceptions.InvalidMutationTypeException
+import com.expediagroup.graphql.generator.GraphQLConceptType
 import com.expediagroup.graphql.generator.SchemaGenerator
 import com.expediagroup.graphql.generator.extensions.getValidFunctions
 import com.expediagroup.graphql.generator.extensions.isNotPublic
@@ -41,7 +42,7 @@ internal fun generateMutations(generator: SchemaGenerator, mutations: List<TopLe
             mutationBuilder.withDirective(it)
         }
 
-        mutation.kClass.getValidFunctions(generator.config.hooks)
+        mutation.kClass.getValidFunctions(generator.config.hooks, GraphQLConceptType.MUTATION)
             .forEach {
                 val function = generateFunction(generator, it, generator.config.topLevelNames.mutation, mutation.obj)
                 val functionFromHook = generator.config.hooks.didGenerateMutationField(mutation.kClass, it, function)

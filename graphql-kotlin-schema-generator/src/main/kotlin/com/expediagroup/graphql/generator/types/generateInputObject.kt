@@ -16,6 +16,7 @@
 
 package com.expediagroup.graphql.generator.types
 
+import com.expediagroup.graphql.generator.GraphQLConceptType
 import com.expediagroup.graphql.generator.SchemaGenerator
 import com.expediagroup.graphql.generator.extensions.getGraphQLDescription
 import com.expediagroup.graphql.generator.extensions.getSimpleName
@@ -35,7 +36,7 @@ internal fun generateInputObject(generator: SchemaGenerator, kClass: KClass<*>):
     }
 
     // It does not make sense to run functions against the input types so we only process the properties
-    kClass.getValidProperties(generator.config.hooks).forEach {
+    kClass.getValidProperties(generator.config.hooks, GraphQLConceptType.INPUT_OBJECT).forEach {
         builder.field(generateInputProperty(generator, it, kClass))
     }
 

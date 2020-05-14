@@ -18,6 +18,7 @@ package com.expediagroup.graphql.generator.types
 
 import com.expediagroup.graphql.TopLevelObject
 import com.expediagroup.graphql.exceptions.InvalidSubscriptionTypeException
+import com.expediagroup.graphql.generator.GraphQLConceptType
 import com.expediagroup.graphql.generator.SchemaGenerator
 import com.expediagroup.graphql.generator.extensions.getValidFunctions
 import com.expediagroup.graphql.generator.extensions.isNotPublic
@@ -38,7 +39,7 @@ internal fun generateSubscriptions(generator: SchemaGenerator, subscriptions: Li
             throw InvalidSubscriptionTypeException(kClass)
         }
 
-        kClass.getValidFunctions(generator.config.hooks)
+        kClass.getValidFunctions(generator.config.hooks, GraphQLConceptType.SUBSCRIPTION)
             .forEach {
                 if (generator.config.hooks.isValidSubscriptionReturnType(kClass, it).not()) {
                     throw InvalidSubscriptionTypeException(kClass, it)

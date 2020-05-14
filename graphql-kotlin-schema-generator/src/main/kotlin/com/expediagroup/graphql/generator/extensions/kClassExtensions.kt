@@ -17,6 +17,7 @@
 package com.expediagroup.graphql.generator.extensions
 
 import com.expediagroup.graphql.exceptions.CouldNotGetNameOfKClassException
+import com.expediagroup.graphql.generator.GraphQLConceptType
 import com.expediagroup.graphql.generator.filters.functionFilters
 import com.expediagroup.graphql.generator.filters.propertyFilters
 import com.expediagroup.graphql.generator.filters.superclassFilters
@@ -37,22 +38,22 @@ import kotlin.reflect.full.superclasses
 
 private const val INPUT_SUFFIX = "Input"
 
-internal fun KClass<*>.getValidProperties(hooks: SchemaGeneratorHooks): List<KProperty<*>> =
+internal fun KClass<*>.getValidProperties(hooks: SchemaGeneratorHooks, graphQLConceptType: GraphQLConceptType): List<KProperty<*>> =
     this.memberProperties
-        .filter { prop -> hooks.isValidProperty(this, prop) }
+        .filter { prop -> hooks.isValidProperty(this, prop, graphQLConceptType) }
         .filter { prop -> propertyFilters.all { it.invoke(prop, this) } }
 
-internal fun KClass<*>.getValidFunctions(hooks: SchemaGeneratorHooks): List<KFunction<*>> =
+internal fun KClass<*>.getValidFunctions(hooks: SchemaGeneratorHooks, graphQLConceptType: GraphQLConceptType): List<KFunction<*>> =
     this.memberFunctions
-        .filter { func -> hooks.isValidFunction(this, func) }
+        .filter { func -> hooks.isValidFunction(this, func, graphQLConceptType) }
         .filter { func -> functionFilters.all { it.invoke(func) } }
 
-internal fun KClass<*>.getValidSuperclasses(hooks: SchemaGeneratorHooks): List<KClass<*>> =
+internal fun KClass<*>.getValidSuperclasses(hooks: SchemaGeneratorHooks, graphQLConceptType: GraphQLConceptType): List<KClass<*>> =
     this.superclasses
-        .filter { hooks.isValidSuperclass(it) }
+        .filter { hooks.isValidSuperclass(it, graphQLConceptType) }
         .filter { kClass -> superclassFilters.all { it.invoke(kClass) } }
         .ifEmpty {
-            this.superclasses.flatMap { it.getValidSuperclasses(hooks) }
+            this.superclasses.flatMap { it.getValidSuperclasses(hooks, graphQLConceptType) }
         }
 
 internal fun KClass<*>.findConstructorParameter(name: String): KParameter? =

@@ -20,6 +20,7 @@ import com.expediagroup.graphql.TopLevelNames
 import com.expediagroup.graphql.TopLevelObject
 import com.expediagroup.graphql.exceptions.EmptySubscriptionTypeException
 import com.expediagroup.graphql.exceptions.InvalidSubscriptionTypeException
+import com.expediagroup.graphql.generator.GraphQLConceptType
 import com.expediagroup.graphql.generator.extensions.getTypeOfFirstArgument
 import com.expediagroup.graphql.generator.extensions.isSubclassOf
 import com.expediagroup.graphql.hooks.SchemaGeneratorHooks
@@ -98,7 +99,7 @@ internal class GenerateSubscriptionTest : TypeTestHelper() {
         val subscriptions = listOf(TopLevelObject(MyPublicTestSubscription()))
 
         class CustomHooks : SchemaGeneratorHooks {
-            override fun isValidFunction(kClass: KClass<*>, function: KFunction<*>) = function.name != "filterMe"
+            override fun isValidFunction(kClass: KClass<*>, function: KFunction<*>, graphQLConceptType: GraphQLConceptType): Boolean = function.name != "filterMe"
         }
 
         every { config.hooks } returns CustomHooks()
