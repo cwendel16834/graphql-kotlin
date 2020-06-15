@@ -34,3 +34,7 @@ tasks {
         }
     }
 }
+
+java {
+    withSourcesJar()
+}
