@@ -24,6 +24,8 @@ import com.expediagroup.graphql.exceptions.EmptyObjectTypeException
 import com.expediagroup.graphql.exceptions.EmptyQueryTypeException
 import com.expediagroup.graphql.exceptions.EmptySubscriptionTypeException
 import com.expediagroup.graphql.generator.GraphQLConceptType
+import com.expediagroup.graphql.generator.extensions.getName
+import com.expediagroup.graphql.generator.extensions.getPropertyName
 import com.expediagroup.graphql.generator.extensions.isSubclassOf
 import graphql.schema.FieldCoordinates
 import graphql.schema.GraphQLCodeRegistry
@@ -38,6 +40,7 @@ import graphql.schema.GraphQLTypeUtil
 import org.reactivestreams.Publisher
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
+import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty
 import kotlin.reflect.KType
 
@@ -164,6 +167,12 @@ interface SchemaGeneratorHooks {
         throw EmptySubscriptionTypeException
     } else {
         type
+    }
+
+    fun getParameterName(generatedType: GraphQLType, parameter: KParameter, inputType: Boolean = false): String? = parameter.getName()
+
+    fun getPropertyName(prop: KProperty<*>, parentClass: KClass<*>): String? {
+        return prop.getPropertyName(parentClass)
     }
 
     val wiringFactory: KotlinDirectiveWiringFactory

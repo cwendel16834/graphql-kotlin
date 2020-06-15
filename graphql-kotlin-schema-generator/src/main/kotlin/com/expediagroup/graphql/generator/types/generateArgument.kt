@@ -19,7 +19,6 @@ package com.expediagroup.graphql.generator.types
 import com.expediagroup.graphql.exceptions.InvalidInputFieldTypeException
 import com.expediagroup.graphql.generator.SchemaGenerator
 import com.expediagroup.graphql.generator.extensions.getGraphQLDescription
-import com.expediagroup.graphql.generator.extensions.getName
 import com.expediagroup.graphql.generator.extensions.isInterface
 import com.expediagroup.graphql.generator.extensions.isList
 import com.expediagroup.graphql.generator.extensions.safeCast
@@ -37,7 +36,7 @@ internal fun generateArgument(generator: SchemaGenerator, parameter: KParameter)
 
     // Deprecation of arguments is currently unsupported: https://github.com/facebook/graphql/issues/197
     val builder = GraphQLArgument.newArgument()
-        .name(parameter.getName())
+        .name(generator.config.hooks.getParameterName(graphQLType, parameter, inputType = true))
         .description(parameter.getGraphQLDescription())
         .type(graphQLType.safeCast())
 

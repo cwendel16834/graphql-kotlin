@@ -101,7 +101,7 @@ open class FunctionDataFetcher(
      */
     protected open fun convertParameterValue(param: KParameter, environment: DataFetchingEnvironment): Any? {
         val name = param.getName()
-        val argument = environment.arguments[name]
+        val argument = environment.arguments[name] ?: environment.arguments[name + "Id"]
 
         return if (param.isList()) {
             val argumentClass = param.type.getTypeOfFirstArgument().getJavaClass()

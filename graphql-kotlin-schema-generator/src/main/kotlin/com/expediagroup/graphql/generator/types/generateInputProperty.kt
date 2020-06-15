@@ -18,7 +18,6 @@ package com.expediagroup.graphql.generator.types
 
 import com.expediagroup.graphql.generator.SchemaGenerator
 import com.expediagroup.graphql.generator.extensions.getPropertyDescription
-import com.expediagroup.graphql.generator.extensions.getPropertyName
 import com.expediagroup.graphql.generator.extensions.safeCast
 import graphql.schema.GraphQLInputObjectField
 import graphql.schema.GraphQLInputType
@@ -30,7 +29,7 @@ internal fun generateInputProperty(generator: SchemaGenerator, prop: KProperty<*
     val graphQLInputType = generateGraphQLType(generator = generator, type = prop.returnType, inputType = true).safeCast<GraphQLInputType>()
 
     builder.description(prop.getPropertyDescription(parentClass))
-    builder.name(prop.getPropertyName(parentClass))
+    builder.name(generator.config.hooks.getPropertyName(prop, parentClass))
     builder.type(graphQLInputType)
 
     generateDirectives(generator, prop, parentClass).forEach {
