@@ -34,7 +34,7 @@ import kotlin.reflect.KType
  * Return a basic GraphQL type given all the information about the kotlin type.
  */
 internal fun generateGraphQLType(generator: SchemaGenerator, type: KType, inputType: Boolean = false): GraphQLType {
-    val hookGraphQLType = generator.config.hooks.willGenerateGraphQLType(type)
+    val hookGraphQLType = generator.config.hooks.willGenerateGraphQLType(type, inputType)
     val graphQLType = hookGraphQLType
         ?: generateScalar(generator, type)
         ?: objectFromReflection(generator, type, inputType)

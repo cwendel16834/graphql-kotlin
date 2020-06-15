@@ -64,10 +64,10 @@ class DataFetcherIT(@Autowired private val testClient: WebTestClient) {
 
         @Bean
         fun customHook(): SchemaGeneratorHooks = object : SchemaGeneratorHooks {
-            override fun willGenerateGraphQLType(type: KType): GraphQLType? = if (type.jvmErasure == LocalDate::class) {
+            override fun willGenerateGraphQLType(type: KType, inputType: Boolean): GraphQLType? = if (type.jvmErasure == LocalDate::class) {
                 localDateType
             } else {
-                super.willGenerateGraphQLType(type)
+                super.willGenerateGraphQLType(type, inputType)
             }
         }
 

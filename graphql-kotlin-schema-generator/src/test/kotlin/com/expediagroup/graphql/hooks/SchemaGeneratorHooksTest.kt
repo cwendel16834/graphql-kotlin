@@ -280,7 +280,7 @@ class SchemaGeneratorHooksTest {
         class MockSchemaGeneratorHooks : SchemaGeneratorHooks {
             var hookCalled = false
 
-            override fun willGenerateGraphQLType(type: KType): GraphQLType? {
+            override fun willGenerateGraphQLType(type: KType, inputType: Boolean): GraphQLType? {
                 hookCalled = true
 
                 return when (type.classifier as? KClass<*>) {

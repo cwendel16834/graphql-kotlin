@@ -86,9 +86,9 @@ type SelfReferenceObject {
 class ServiceQueryResolverTest {
 
     class CustomScalarFederatedHooks : FederatedSchemaGeneratorHooks(FederatedTypeRegistry()) {
-        override fun willGenerateGraphQLType(type: KType): GraphQLType? = when (type.classifier as? KClass<*>) {
+        override fun willGenerateGraphQLType(type: KType, inputType: Boolean): GraphQLType? = when (type.classifier as? KClass<*>) {
             CustomScalar::class -> graphqlCustomScalar
-            else -> super.willGenerateGraphQLType(type)
+            else -> super.willGenerateGraphQLType(type, inputType)
         }
 
         private val graphqlCustomScalar = GraphQLScalarType.newScalar()

@@ -59,7 +59,7 @@ interface SchemaGeneratorHooks {
      * This allows supporting objects that the caller does not want to use reflection on for special handling
      */
     @Suppress("Detekt.FunctionOnlyReturningConstant")
-    fun willGenerateGraphQLType(type: KType): GraphQLType? = null
+    fun willGenerateGraphQLType(type: KType, inputType: Boolean): GraphQLType? = null
 
     /**
      * Called after using reflection to generate the graphql object type but before returning it to the schema builder.

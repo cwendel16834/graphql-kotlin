@@ -61,7 +61,7 @@ open class FederatedSchemaGeneratorHooks(private val federatedTypeRegistry: Fede
     private val directivesToInclude: List<String> = federatedDirectiveTypes.map { it.name }.plus(DEPRECATED_DIRECTIVE_NAME)
     private val customDirectivePredicate: Predicate<GraphQLDirective> = Predicate { directivesToInclude.contains(it.name) }
 
-    override fun willGenerateGraphQLType(type: KType): GraphQLType? = when (type.classifier) {
+    override fun willGenerateGraphQLType(type: KType, inputType: Boolean): GraphQLType? = when (type.classifier) {
         FieldSet::class -> FIELD_SET_SCALAR_TYPE
         else -> null
     }

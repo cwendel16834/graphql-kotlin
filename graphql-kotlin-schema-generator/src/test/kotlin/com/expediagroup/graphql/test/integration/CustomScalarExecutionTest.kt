@@ -84,7 +84,7 @@ class CustomScalarExecutionTest {
     }
 
     class CustomScalarHooks : SchemaGeneratorHooks {
-        override fun willGenerateGraphQLType(type: KType): GraphQLType? {
+        override fun willGenerateGraphQLType(type: KType, inputType: Boolean): GraphQLType? {
             return when (type.classifier as? KClass<*>) {
                 UUID::class -> graphqlUUIDType
                 else -> null
